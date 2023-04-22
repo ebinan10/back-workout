@@ -29,11 +29,11 @@ app.use(express.json());
 app.use(cors({origin:true,credentials: true} ))
 app.use(cookieParser());  
 
-mongoose.connect(process.env.Uri)
+mongoose.connect(process.env.Url) 
 .then(()=>{
     app.listen(process.env.Port, console.log('connected to DB and localhost running on port 4000'))
      
-     
+      
     app.use( 
         session({
         secret: 'secret key',
