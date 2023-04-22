@@ -1,141 +1,90 @@
 const jwt = require('jsonwebtoken');
 const env = require('dotenv');
-const RefreshToken = require('../database/RefreshToken');
-const User = require('../database/User');
-let token
-
-exports.createAccessToken = (user) =>{
-    return  jwt.sign(user, process.env.Secret_Key,{ expiresIn: '1m' })
-      
-  }
-
-  exports.createRefreshToken = (user) =>{
-    return jwt.sign(user.email, process.env.Secret_Key)
-   }
-
-const createRefreshToken = (user) =>{
-        return jwt.sign(user.id, process.env.Secret_Key)
-       }
-    
+const User = require('../database/User')
 
 
-const createAccessToken = (user) =>{
-         return  jwt.sign(user, process.env.Secret_Key,{ expiresIn: '1m' })
-           
-       }
-
- const CheckToken = async(token) =>{
-    try{
-        console.log(token)
-        const decod = jwt.decode(token)
-                if(decod.exp < Date.now){
-                console.log(token)
-            if(token){
-                jwt.verify(token, process.env.Secret_Key,
-                    function(err,data){
-                        if(err){
-                              console.log('error occured')
-                        }else{
-                            return;
-                        }  
-                    })
-            }
-            else{
-                let refresh = await RefreshToken.find();
-        refresh = refresh[0];
-        const decode = refresh.refreshtoken
-        const decod = jwt.decode(decode)
-        const user = User.find({email:decod})
-        const {_id,email,username} = user
-        const data = {_id, email, username}
-         token = createAccessToken(data); 
-         jwt.verify(token, process.env.Secret_Key,
-            function(err,data){
-                if(err){
-                    console.log('error occured')
-                }else{
-                    return;
-                }
-            })   
-        }}else{
-                let refresh = await RefreshToken.find();
-        refresh = refresh[0];
-        const decode = refresh.refreshtoken
-        const decod = jwt.decode(decode)
-        const user = User.find({email:decod})
-        const {_id,email,username} = user
-        const data = {_id, email, username}
-         token = createAccessToken(data); 
-         jwt.verify(token, process.env.Secret_Key,
-            function(err,data){
-                if(err){
-                    console.log('error occured')
-                }else{
-                    return;
-                }
-        })
-    }}
-        catch(err){
-                console.log(err)
-        }
-    
-    }
-
-const VerifyToken = async(req, res, next) =>{
-    try{
-            const token = req.cookies.token
-        if(token){
-            jwt.verify(token, process.env.Secret_Key,
-                function(err,user){
-                    if (err){
-                    res.status(403).json(err)
-                    }
-                    else{
-                        req.user = user;
-                        console.log(req.user)
-                        next()
-                    }
-                })
-        }
-        else{
-            // res.status(401).json('you are not authenticated');
-           token = await RefreshToken.find()
-                if(token){
-                }
-        }
-    }
-    catch(err){
-            console.log(err)
-    }
- 
+exports.createRefreshtoken  = (user) =>{
+    const token = jwt.sign({id:user._id,username:user.username}, process.env.Secret_Key,{expiresIn:60*60})
+    return token;
 }
 
-exports.Refreshtoken = async( req, res, next )=>{
-    try{
-            // const token = req.cookies.token;
-            let refresh = await RefreshToken.find();
-            
-            refresh = refresh[0]
-            // console.log(refresh);
-            const decode = refresh.refreshtoken;
+  exports.createAccesstoken =(user)=>{
+       const token =   jwt.sign({id:user._id,username:user.username}, process.env.Secret_Key,{expiresIn:60*5})
+    return token;
+}
+ 
+exports.VerifyAccessToken =(req, res, next)=>{ 
     
-    if(decode ){
-        let refresh = await RefreshToken.find();
-        refresh = refresh[0];
-        const decod = jwt.decode(decode)
-        const user = User.find({email:decod})
-        const {_id,email,username} = user
-        const data = {_id, email, username}
-         req.cookies.token = createAccessToken(data);
-        CheckToken(req.cookies.token)
-        next();
+    const Bearer = req.headers.authorization;
+    const token = Bearer?.split(' ')[1];
+   
+    if (typeof Bearer !== undefined){
+       jwt.verify(token, process.env.Secret_Key,
+        function(err,decoded) {
+            if(err){
+               
+                res.status(401).json('You are not authenticated')
+                }
+                else{
+                req.userid =decoded.id
+                next();   
+                
+        }
+             
+            }
+       ) 
         
     }
     else{
-        res.status(403).json('please log in ')
-    }
-    }
-    catch(err){
-        console.log(err)
+        res.status(401).json("you are not authenticaticated")
     }
 }
+exports.createNewAccesstoken = async (req, res, next) =>{
+    const refreshToken = req.cookies.token;
+    const decod =  jwt.decode(refreshToken, process.env.Secret_Key);
+    let user
+    let username,_id, email
+    if(decod){ 
+        const {id} = decod
+        _id = id
+        user = await User.findById(id) 
+    username =user.username
+    email = user.email
+    const isLogin = true;
+    if(refreshToken === undefined || refreshToken === null){
+
+        res.status(401).json('you have to login in again')
+        return;
+    } 
+    else{
+    jwt.verify(refreshToken, process.env.Secret_Key,
+       async function(err, decode) {
+            if( err?.message ==="jwt expired")
+                {     
+                    res.status(401).json("jwt expired")
+                }  
+               else {
+                    const newAccessToken = jwt.sign({id:decod.id,username:decod.username}, process.env.Secret_Key,{expiresIn:60})
+                    res.status(200).json( {newAccessToken,username,_id,isLogin, email} )
+                    next();
+                } }   
+            )
+    }
+    }else{
+        res.status(401).json('this is an error')
+    } 
+   
+}
+  
+  
+exports.Logout = (req, res, next) =>{
+    res.cookie('token', 'none', {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+    })
+    res.status(200).json('you are logout')
+    
+        }
+        
+    
+   

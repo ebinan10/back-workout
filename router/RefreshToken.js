@@ -1,7 +1,9 @@
 const express = require('express');
-const router =express.Router();
-const Token = require('../controller/RefreshToken');
+const RefreshToken = require('../controller/RefreshToken')
+const router = express.Router();
 
-router.post('/refresh', Token.Refreshtoken)
+router.get('/', RefreshToken.createNewAccesstoken )
+router.get('/logout', RefreshToken.Logout)
 
-module.exports = router;
+module.exports = router 
+
