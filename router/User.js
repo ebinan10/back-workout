@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const user = require('../controller/User');
-const VerifyAccessToken =require('../controller/Refreshtoken');
+const VerifyAccessToken =require('../controller/refreshtoken');
 const verify = VerifyAccessToken.VerifyAccessToken;
 
 router.get('/getuser',verify, user.GetUsers)

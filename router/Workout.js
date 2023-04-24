@@ -1,6 +1,6 @@
 const express = require('express');
 const Control = require('../controller/Workout')
-const VerifyAccessToken =require('../controller/Refreshtoken')
+const VerifyAccessToken =require('../controller/refreshtoken')
 
 const verify = VerifyAccessToken.VerifyAccessToken;
 const router = express.Router()
