@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const env = require('dotenv');
-const User = require('../database/user')
+const User = require('../database/User')
 
 
 exports.createRefreshtoken  = (user) =>{

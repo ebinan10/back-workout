@@ -1,10 +1,9 @@
     const express = require('express');
     const app = express()
     const Bycrypt = require('bcrypt');
-    const User = require('../database/user')
-    const WorkOut = require('../database/workout')
-    const Session = require('../database/session');
-    const Refreshtoken =require('./refreshtoken')
+    const User = require('../database/User')
+    const WorkOut = require('../database/Workout')
+    const Refreshtoken =require('./Refreshtoken')
     const nodemailer = require("nodemailer");
     const crypto = require('crypto')
     

@@ -1,5 +1,5 @@
-const WorkOut = require('../database/workout')
-const User = require('../database/user');
+const WorkOut = require('../database/Workout')
+const User = require('../database/User');
 const jwt = require('jsonwebtoken')
 const env = require('dotenv')
 const mongoose = require('mongoose')
