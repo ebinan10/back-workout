@@ -3,7 +3,7 @@
     const Bycrypt = require('bcrypt');
     const User = require('../database/User')
     const WorkOut = require('../database/Workout')
-    const Refreshtoken =require('./refreshtoken')
+    const Refreshtoken =require('./RefreshToken')
     const nodemailer = require("nodemailer");
     const crypto = require('crypto')
     

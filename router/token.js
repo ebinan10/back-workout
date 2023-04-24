@@ -1,5 +1,5 @@
 const express = require('express');
-const RefreshToken = require('../controller/refreshtoken')
+const RefreshToken = require('../controller/RefreshToken')
 const router = express.Router();
 
 router.get('/', RefreshToken.createNewAccesstoken )
