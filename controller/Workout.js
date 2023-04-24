@@ -1,5 +1,5 @@
-const WorkOut = require('../database/Workout')
-const User = require('../database/User');
+const WorkOut = require('../database/workout')
+const User = require('../database/user');
 const jwt = require('jsonwebtoken')
 const env = require('dotenv')
 const mongoose = require('mongoose')
@@ -24,6 +24,7 @@ exports.GetEachWorkOut = async(req,res,next) => {
                 res.status(400).json("an error occured" + err)
             }
             else{
+                console.log(docs);
                 res.status(200).json(docs)
             } 
         }

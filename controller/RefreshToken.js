@@ -1,16 +1,16 @@
 const jwt = require('jsonwebtoken');
 const env = require('dotenv');
-const User = require('../database/User')
+const User = require('../database/user')
 
 
 exports.createRefreshtoken  = (user) =>{
     const token = jwt.sign({id:user._id,username:user.username}, process.env.Secret_Key,{expiresIn:60*60})
     return token;
-}
+} 
 
   exports.createAccesstoken =(user)=>{
        const token =   jwt.sign({id:user._id,username:user.username}, process.env.Secret_Key,{expiresIn:60*5})
-    return token;
+    return token; 
 }
  
 exports.VerifyAccessToken =(req, res, next)=>{ 
@@ -43,14 +43,11 @@ exports.createNewAccesstoken = async (req, res, next) =>{
     const refreshToken = req.cookies.token;
     const decod =  jwt.decode(refreshToken, process.env.Secret_Key);
     let user
-    let username,_id, email
+    let username,_id, email, isLogin
     if(decod){ 
         const {id} = decod
         _id = id
-        user = await User.findById(id) 
-    username =user.username
-    email = user.email
-    const isLogin = true;
+    
     if(refreshToken === undefined || refreshToken === null){
 
         res.status(401).json('you have to login in again')
@@ -64,6 +61,12 @@ exports.createNewAccesstoken = async (req, res, next) =>{
                     res.status(401).json("jwt expired")
                 }  
                else {
+                    const {id} = decod
+                    _id = id
+                    const user =await User.findById(id)
+                    username =user.username
+                    email = user.email
+                    isLogin = true;
                     const newAccessToken = jwt.sign({id:decod.id,username:decod.username}, process.env.Secret_Key,{expiresIn:60})
                     res.status(200).json( {newAccessToken,username,_id,isLogin, email} )
                     next();

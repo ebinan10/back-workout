@@ -1,11 +1,11 @@
     const express = require('express');
     const app = express()
     const Bycrypt = require('bcrypt');
-    const User = require('../database/User')
-    const WorkOut = require('../database/Workout')
-    const Refreshtoken =require('../controller/RefreshToken')
+    const User = require('../database/user')
+    const WorkOut = require('../database/workout')
+    const Session = require('../database/session');
+    const Refreshtoken =require('./RefreshToken')
     const nodemailer = require("nodemailer");
-    const cookies = require('cookie')
     const crypto = require('crypto')
     
     
@@ -139,11 +139,12 @@ exports.Login = async (req,res,next) =>{
                           const RefreshToken = Refreshtoken.createRefreshtoken(result);
                           const AccessToken = Refreshtoken.createAccesstoken(result)
                           const data ={ id: _id, email: email, isLogin: true, username: username, accessToken: AccessToken};
+                                console.log(AccessToken)
+                                console.log(data)
                                 
+                                res.cookie("token", RefreshToken, {httpOnly: true})
                                 
-                                res.cookie("token", RefreshToken, {httpOnly: true, secure:false})
-                                
-                                  console.log(req.cookies.token);
+                                  console.log("req.cookies.token",req.cookies.token);
                                   var transporter = nodemailer.createTransport({
                                     service: 'gmail',
                                     auth: {
