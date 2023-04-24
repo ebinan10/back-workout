@@ -4,7 +4,7 @@
     const User = require('../database/user')
     const WorkOut = require('../database/workout')
     const Session = require('../database/session');
-    const Refreshtoken =require('./RefreshToken')
+    const Refreshtoken =require('./refreshtoken')
     const nodemailer = require("nodemailer");
     const crypto = require('crypto')
     

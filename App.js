@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 const env = require('dotenv').config()
 const WorkOutRouter = require('./router/Workout')
 const UserRouter = require('./router/User')
-const RefreshToken = require('./router/RefreshToken')
+const RefreshToken = require('./router/token')
 const cors = require('cors')
 app.use(express.json());   
 app.use(cors({
