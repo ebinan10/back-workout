@@ -11,7 +11,8 @@ const RefreshToken = require('./router/token')
 const cors = require('cors')
 app.use(express.json());   
 app.use(cors({
-    origin: "https://frontend-9r12.onrender.com"
+    origin: "https://frontend-9r12.onrender.com",
+    credentials: true
 }
 ))
 app.options('*', cors())
