@@ -11,10 +11,10 @@ const RefreshToken = require('./router/token')
 const cors = require('cors')
 app.use(express.json());   
 app.use(cors({
-    origin: true,
-    credentials:true,
-    methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE'],
-allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token']} ))
+    origin: "https://frontend-9r12.onrender.com"
+}
+))
+app.options('*', cors())
       
 mongoose.connect(process.env.Uri)
 .then(()=>{

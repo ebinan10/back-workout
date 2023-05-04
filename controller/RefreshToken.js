@@ -41,6 +41,7 @@ exports.VerifyAccessToken =(req, res, next)=>{
 }
 exports.createNewAccesstoken = async (req, res, next) =>{
     const refreshToken = req.cookies.token;
+    console.log(refreshToken)
     const decod =  jwt.decode(refreshToken, process.env.Secret_Key);
     let user
     let username,_id, email
